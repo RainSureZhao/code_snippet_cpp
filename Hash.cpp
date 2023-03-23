@@ -1,18 +1,17 @@
-typedef long long ll;
-const int base = 1e8 + 7;
+const int base = 1e7 + 7;
 struct hash_map {
   int head[base];
   vector<int> next;
-  vector<ll> key;
-  vector<ll> val;
+  vector<long long> key;
+  vector<long long> val;
   hash_map() {
     memset(head, -1, sizeof(head));
     next.reserve(1e7);
     key.reserve(1e7);
     val.reserve(1e7);
   }
-  int hash(ll k) { return k % base; }
-  ll &operator[](ll k) {
+  int hash(long long k) { return ((k % base) + base) % base; }
+  long long &operator[](long long k) {
     int h = hash(k);
     for (int i = head[h]; ~i; i = next[i])
       if (key[i] == k) return val[i];
@@ -22,7 +21,7 @@ struct hash_map {
     head[h] = next.size() - 1;
     return val.back();
   }
-  ll has_key(ll k) {
+  bool has_key(long long k) {
     int h = hash(k);
     for (int i = head[h]; ~i; i = next[i])
       if (key[i] == k) return true;
