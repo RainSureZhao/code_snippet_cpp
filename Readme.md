@@ -18,3 +18,4 @@
 - Miller-Rabin(判断素数) && Pollard-rho(分解质因数)
 - 多项式(By Jiangly)
 - unordered_map 防hack/加速
+- 马拉车算法

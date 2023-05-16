@@ -119,6 +119,7 @@ struct HLD {
 };
 
 
-// HLD t(n + 1);
+// HLD t(n);
 // t.addEdge(a, b);
-// 
+// t.work(root); 默认root为0
+// 查询lca = t.lca(a, b);
