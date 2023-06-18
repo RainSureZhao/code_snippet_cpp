@@ -1,146 +1,217 @@
-struct Big_Int
-{
+struct BigInt {
     vector<int> a;
-    int carry = 1e10;
-    void init(string s){  // 传入字符串初始化
-        for(int i = s.size() - 1; i >= 0; ) {
-            int len = min(10ll, i + 1);
+    int carry = 1e9;
+    BigInt() = default;
+    BigInt(const string &s) {
+        for(int i = static_cast<int>(s.size() - 1); i >= 0; ) {
+            int len = min(9ll, i + 1);
             string t = s.substr(i - len + 1, len);
             i -= len;
             a.push_back(stoll(t));
         }
     }
-    void init(vector<int> b) // 赋值
-    {
+    BigInt(const vector<int> &b) {
         a = b;
     }
-    void init(int b)
-    {
-        vector<int> B; B.push_back(b);
-        init(B);
+    BigInt(int x) {
+        this->a = vector<int>(1, x);
     }
-    vector<int> add(vector<int> B)  // 加一个大数
-    {
+
+    BigInt& operator=(const BigInt& other) { // 重载赋值运算符 BigInt => BigInt a = b;
+        if(this != &other) {
+            this->a = other.a;
+        }
+        return *this;
+    }
+    BigInt& operator=(const int x) {  // 重载赋值运算符 int => BigInt a = 100;
+        this->a = vector<int>(1, x);
+        return *this;
+    }
+    BigInt& operator=(const string &s) { // 重载赋值运算符 string => BitInt a = "123456789987654321";
+        BigInt temp(s);
+        *this = temp;
+        return *this;
+    }
+    BigInt& operator=(const vector<int> &b) { // 重载赋值运算符 vector<int> => BigInt a = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+        this->a = b;
+        return *this;
+    }
+    // 加法 BigInt + BigInt
+    BigInt operator+(const BigInt &b) const { // 重载加法运算符 BigInt + BigInt
+        BigInt res;
         int t = 0;
-        vector<int> res;
-        for(int i = 0; i < a.size() || i < B.size(); i ++){
-            if(i < a.size()) t += a[i];
-            if(i < B.size()) t += B[i];
-            res.push_back(t % carry);
+        for(int i = 0; i < static_cast<int>(a.size()) || i < static_cast<int>(b.a.size()); i ++) {
+            if(i < static_cast<int>(a.size())) t += a[i];
+            if(i < static_cast<int>(b.a.size())) t += b.a[i];
+            res.a.push_back(t % carry);
             t /= carry;
         }
-        if(t) res.push_back(1);
-        a = res;
+        if(t) res.a.push_back(1);
         return res;
     }
-    vector<int> addc(int b)  // 加一个小数
-    {
+    // 减法 BigInt - BigInt
+    BigInt operator-(const BigInt &b) const {
+        BigInt res;
         int t = 0;
-        vector<int> res;
-        vector<int> B; B.push_back(b);
-        for(int i = 0; i < a.size() || i < B.size(); i ++){
-            if(i < a.size()) t += a[i];
-            if(i < B.size()) t += B[i];
-            res.push_back(t % carry);
-            t /= carry;
-        }
-        if(t) res.push_back(1);
-        return a = res;
-    }
-    vector<int> sub(vector<int> B)  // 减一个大数
-    {   
-        int t = 0;
-        vector<int> res;
-        for(int i = 0; i < a.size(); i ++){
+        for(int i = 0; i < static_cast<int>(a.size()); i ++) {
             t = a[i] - t;
-            if(i < B.size()) t -= B[i];
-            res.push_back((t + carry) % carry);
+            if(i < static_cast<int>(b.a.size())) t -= b.a[i];
+            res.a.push_back((t + carry) % carry);
             if(t < 0) t = 1;
             else t = 0;
         }
-        while(res.size() > 1 && res.back() == 0) res.pop_back();
-        return a = res;
+        while(res.a.size() > 1 && res.a.back() == 0) res.a.pop_back();
+        return res;
     }
-    vector<int> subc(int b) // 减一个小数
-    {
-        int t = 0;
-        vector<int> B; B.push_back(b);
-        vector<int> res;
-        for(int i = 0; i < a.size(); i ++){
-            t = a[i] - t;
-            if(i < B.size()) t -= B[i];
-            res.push_back((t + carry) % carry);
-            if(t < 0) t = 1;
-            else t = 0;
-        }
-        while(res.size() > 1 && res.back() == 0) res.pop_back();
-        return a = res;
-    }
-    vector<int> mulc(int b) // 乘一个小数
-    {
-        int t = 0;
-        vector<int> res;
-        for(int i = 0; i < a.size() || t; i ++){
-            if(i < a.size()) t += a[i] * b;
-            res.push_back(t % carry);
-            t /= carry;
-        }
-        while(res.size() > 1 && res.back() == 0) res.pop_back();
-        return a = res;
-    }
-    vector<int> mul(vector<int> B) // 乘一个大数，可以用fft
-    {
-        vector<int> res(a.size() + B.size() + 5, 0);
-        for(int i = 0; i < a.size(); i ++){
-            for(int j = 0; j < B.size(); j ++){
-                res[i + j] += a[i] * B[j];
-                res[i + j + 1] += res[i + j] / carry;
-                res[i + j] %= carry;
+    // 乘法 BigInt * BigInt
+    BigInt operator*(const BigInt &c) const {
+        BigInt res;
+        res.a = vector<int>(a.size() + c.a.size() + 5, 0);
+        for(int i = 0; i < static_cast<int>(a.size()); i ++) {
+            for(int j = 0; j < static_cast<int>(c.a.size()); j ++) {
+                res.a[i + j] += a[i] * c.a[j];
+                res.a[i + j + 1] += res.a[i + j] / carry;
+                res.a[i + j] %= carry;
             }
         }
-        while(res.size() > 1 && res.back() == 0) res.pop_back();
-        return a = res;
+        while(res.a.size() > 1 && res.a.back() == 0) res.a.pop_back();
+        return res;
     }
-    vector<int> div(int b) // 除一个小数，不要余数
-    {
-        vector<int> res;
-        int r = 0;
+    // 乘法 BigInt * int
+    BigInt operator*(const int x) const {
+        BigInt res;
+        int t = 0;
+        for(int i = 0; i < static_cast<int>(a.size()) || t; i ++) {
+            if(i < static_cast<int>(a.size())) t += a[i] * x;
+            res.a.push_back(t % carry);
+            t /= carry;
+        }
+        while(res.a.size() > 1 && res.a.back() == 0) res.a.pop_back();
+        return res;
+    }
+    // 除法
+    BigInt operator/(const BigInt &other) const {
+        BigInt res, cur;
+        for(int i = static_cast<int>(a.size()) - 1; i >= 0; i --) {
+            cur.a.insert(cur.a.begin(), a[i]);
+            int l = 0, r = carry - 1;
+            while(l < r) {
+                int mid = (l + r + 1) >> 1;
+                if(other * mid <= cur) l = mid;
+                else r = mid - 1;
+            }
+            res.a.insert(res.a.begin(), l);
+            cur = cur - other * l;
+        }
+        while(res.a.size() > 1 && res.a.back() == 0) res.a.pop_back();
+        return res;
+    }
+    // 求余
+    BigInt operator%(const BigInt &other) const {
+        BigInt quotient = *this / other;
+        BigInt remainder = *this - quotient * other;
+        return remainder;
+    }
+    // 重载加等于运算符
+    BigInt& operator+=(const BigInt &other) {
+        auto tmp = *this + other;
+        *this = tmp;
+        return *this;
+    }
+
+    BigInt& operator-=(const BigInt &other) {
+        auto tmp = *this - other;
+        *this = tmp;
+        return *this;
+    }
+
+    BigInt& operator*=(const BigInt &other) {
+        auto tmp = *this * other;
+        *this = tmp;
+        return *this;
+    }
+    BigInt& operator*=(const int x) {
+        auto tmp = *this * x;
+        *this = tmp;
+        return *this;
+    }
+    BigInt& operator/=(const BigInt &other) {
+        auto tmp = *this / other;
+        *this = tmp;
+        return *this;
+    }
+    BigInt& operator%=(const BigInt &other) {
+        auto tmp = *this % other;
+        *this = tmp;
+        return *this;
+    }
+    // 重载输入运算符
+    friend istream& operator>>(istream& is, BigInt& obj) {
+        string input;
+        is >> input;
+        obj = BigInt(input);
+        return is;
+    }
+
+    // 重载输出运算符
+    friend ostream& operator<<(ostream& os, const BigInt& obj) {
+        if (obj.a.empty()) {
+            os << "0";
+        } else {
+            for (int i = obj.a.size() - 1; i >= 0; i --) {
+                if (i == obj.a.size() - 1) {
+                    os << obj.a[i];
+                } else {
+                    // 控制输出宽度为10，并用前导零填充
+                    os << setw(9) << setfill('0') << obj.a[i];
+                }
+            }
+        }
+        return os;
+    }
+    
+    bool operator!= (const BigInt &b) const { // 重载不等于运算符 BigInt != BigInt
+        return this->a != b.a;
+    }
+    bool operator!= (const int x) const { // 重载不等于运算符 BigInt != int
+        return this->a != vector<int>(1, x);
+    }
+    bool operator==(const BigInt &b) const { // 重载等于运算符 BigInt == BigInt
+        return this->a == b.a;
+    }
+    bool operator==(const int x) const { // 重载等于运算符 BigInt == int
+        return this->a == vector<int>(1, x);
+    }
+    bool operator<(const BigInt &b) const { // 重载小于运算符 BigInt < BigInt
+        if(a.size() != b.a.size()) return a.size() < b.a.size();
         for(int i = a.size() - 1; i >= 0; i --) {
-            r = r * carry + a[i];
-            res.push_back(r / b);
-            r %= b;
+            if(a[i] != b.a[i]) return a[i] < b.a[i];
         }
-        reverse(res.begin(), res.end());
-        while(res.size() > 1 && res.back() == 0) res.pop_back();
-        return a = res;
+        return false;
     }
-    vector<int> divr(int b, int &r) // 除一个小数，要余数
-    {
-        vector<int> res;
-        r = 0;
+    bool operator<(const int x) const { // 重载小于运算符 BigInt < int
+        return a < vector<int>(1, x);
+    }
+    bool operator>(const BigInt &b) const { // 重载大于运算符 BigInt > BigInt
+        if(a.size() != b.a.size()) return a.size() > b.a.size();
         for(int i = a.size() - 1; i >= 0; i --) {
-            r = r * carry + a[i];
-            res.push_back(r / b);
-            r %= b;
+            if(a[i] != b.a[i]) return a[i] > b.a[i];
         }
-        reverse(res.begin(), res.end());
-        while(res.size() > 1 && res.back() == 0) res.pop_back();
-        return a = res;
+        return false;
     }
-    bool cmp(vector<int> &B) // 比较大小
-    {
-        if(a.size() != B.size()) return a.size() > B.size();
-        for(int i = a.size() - 1; i >= 0; i --){
-            if(a[i] != B[i]) return a[i] > B[i];
-        }
-        return true;
+    bool operator>(const int x) const { // 重载大于运算符 BigInt > int
+        return a > vector<int>(1, x);
     }
-    void output()
-    {
-        printf("%lld", a[a.size() - 1]);
-        for(int i = a.size() - 2; i >= 0; i --) {
-            printf("%010lld", a[i]);
-        }
-        puts(""); // 输出一个回车
+    bool operator<=(const BigInt &b) const { // 重载小于等于运算符 BigInt <= BigInt
+        return *this < b || *this == b;
+    }
+    bool operator<=(const int x) const { // 重载小于等于运算符 BigInt <= int
+        return *this < x || *this == x;
+    }
+    bool operator>=(const BigInt &b) const { // 重载大于等于运算符 BigInt >= BigInt
+        return *this > b || *this == b;
+    }
+    bool operator>=(const int x) const { // 重载大于等于运算符 BigInt >= int
+        return *this > x || *this == x;
     }
 };
