@@ -3,7 +3,7 @@ typedef struct node
     int l, r;
     int cnt;
 }Node;
-vector<Node> tr(n * 24);
+vector<Node> tr(n * 24); // 根据实际情况设置大小
 vector<int> root(n + 1);
 int idx = 0;
 function<int(int, int)> build([&](int l, int r) {
@@ -43,6 +43,7 @@ nums.erase(unique(nums.begin(), nums.end()), nums.end());
 auto find([&](int x) {
     return lower_bound(nums.begin(), nums.end(), x) - nums.begin();
 });
+root[0] = build(0, nums.size() - 1);
 for(int i = 1; i <= n; i ++){
     root[i] = insert(root[i - 1], 0, nums.size() - 1, find(a[i]));
 }
