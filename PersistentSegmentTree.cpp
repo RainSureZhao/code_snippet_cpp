@@ -27,7 +27,13 @@ function<int(int, int, int, int)> insert([&](int p, int l, int r, int x) {
     tr[q].cnt = tr[tr[q].l].cnt + tr[tr[q].r].cnt;
     return q;
 });
-function<int(int, int, int, int, int)> query([&](int q, int p, int l, int r, int k) {
+function<int(int, int, int, int, int)> query([&](int q, int p, int l, int r, int k) { // 查询区间[q, p]之间，k出现的次数
+    if(l == r) return tr[p].cnt - tr[q].cnt;
+    int mid = (l + r) >> 1;
+    if(k <= mid) return query(tr[q].l, tr[p].l, l, mid, k);
+    else return query(tr[q].r, tr[p].r, mid + 1, r, k);
+});
+function<int(int, int, int, int, int)> query([&](int q, int p, int l, int r, int k) { // 查询区间k小数
     if(l == r) return r;
     int cnt = tr[tr[q].l].cnt - tr[tr[p].l].cnt;
     int mid = (l + r) >> 1;
