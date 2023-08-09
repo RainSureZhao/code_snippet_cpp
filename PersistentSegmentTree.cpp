@@ -40,6 +40,14 @@ function<int(int, int, int, int, int)> query([&](int q, int p, int l, int r, int
     if(k <= cnt) return query(tr[q].l, tr[p].l, l, mid, k);
     else return query(tr[q].r, tr[p].r, mid + 1, r, k - cnt);
 });
+function<int(int, int, int, int, int, int)> query([&](int u, int v, int l, int r, int x, int y) { // 查询在下标位于[l, r]中位于区间[x, y]的个数
+    if(x <= l && r <= y) return tr[v].cnt - tr[u].cnt;
+    int mid = (l + r) >> 1;
+    int res = 0;
+    if(x <= mid) res += query(tr[u].l, tr[v].l, l, mid, x, y);
+    if(y > mid) res += query(tr[u].r, tr[v].r, mid + 1, r, x, y);
+    return res;
+});
 vector<int> a(n + 1);
 // 离散化写法
 vector<int> nums;

@@ -30,3 +30,33 @@ public:
         return res;
     }
 };
+
+vector<vector<int>> son(n * 32 + 10, vector<int>(2));
+vector<int> cnt(n * 32 + 10);
+int id;
+
+auto insert([&](int x, int c) {
+    int p = 0;
+    for(int i = 30; i >= 0; i --) {
+        int v = x >> i & 1;
+        if(!son[p][v]) {
+            son[p][v] = ++ id;
+            cnt[son[p][v]] = 0;
+        }
+        p = son[p][v];
+        cnt[p] += c;
+    }
+});
+
+int get_max_xor_val(int x) {
+    int p = 0;
+    int res = 0;
+    for(int i = 30; i >= 0; i --) {
+        int v = x >> i & 1;
+        if(cnt[son[p][!v]]) {
+            res += 1 << i;
+            p = son[p][!v];
+        }else p = son[p][v];
+    }
+    return res;
+}

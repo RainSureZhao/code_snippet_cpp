@@ -1,5 +1,4 @@
-class KMP { // 下标从1开始
-    public:
+struct KMP { // 下标从1开始
     vector<int> ne;
     string s;
     int n;
