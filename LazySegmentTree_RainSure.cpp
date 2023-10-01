@@ -7,7 +7,7 @@ struct LazySegmentTree {
     };
     const int n;
     vector<Node> tr;
-    LazySegmentTree(const int n) : n(n + 1), tr(4 * n + 10) {}
+    LazySegmentTree(const int n) : n(n), tr(4 * n + 10) {}
     LazySegmentTree(const vector<Info> &init) : LazySegmentTree(init.size() - 1) {
         function<void(int, int, int)> build([&](int u, int l, int r) {
             if(l == r) {

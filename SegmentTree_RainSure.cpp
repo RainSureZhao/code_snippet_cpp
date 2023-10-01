@@ -8,7 +8,7 @@ struct SegmentTree {
 		Info info;
 	};
 	vector<Node> tr;
-	SegmentTree(const int n) : n(n + 1), merge(Merge()), tr(4 * n + 10) {}
+	SegmentTree(const int n) : n(n), merge(Merge()), tr(4 * n + 10) {}
 	SegmentTree(const vector<Info> &init) : SegmentTree(init.size() - 1) {
 		function<void(int, int, int)> build([&](int u, int l, int r) {
 			if(l == r) {
