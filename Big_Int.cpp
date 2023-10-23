@@ -158,8 +158,8 @@ struct BigInt {
         if (obj.a.empty()) {
             os << "0";
         } else {
-            for (int i = obj.a.size() - 1; i >= 0; i --) {
-                if (i == obj.a.size() - 1) {
+            for (int i = static_cast<int>(obj.a.size()) - 1; i >= 0; i --) {
+                if (i == static_cast<int>(obj.a.size()) - 1) {
                     os << obj.a[i];
                 } else {
                     // 控制输出宽度为10，并用前导零填充

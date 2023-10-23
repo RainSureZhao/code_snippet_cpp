@@ -15,6 +15,7 @@ struct sparse_table {
 		}
 	} 
 	Info query(const int l, const int r) {
+		if(r < l) return Info();
 		int k = __lg(r - l + 1);
 		return merge(f[l][k], f[r - (1 << k) + 1][k]);
 	}
