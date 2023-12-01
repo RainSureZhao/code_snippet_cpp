@@ -1,4 +1,4 @@
-multiset<int> S,T; // Always S.size()==T.size() or S.size()==T.size()+1
+multiset<int> S, T; // Always S.size()==T.size() or S.size()==T.size()+1
 void eval(){
     if(S.size()){
         auto itr = S.end(); itr--;
@@ -17,4 +17,5 @@ void erase(int x){
     auto itr = S.end(); itr--;
     if(*itr < x) T.extract(x);
     else S.extract(x);
+    eval();
 }
