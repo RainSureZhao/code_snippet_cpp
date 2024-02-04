@@ -48,15 +48,31 @@ auto insert([&](int x, int c) {
     }
 });
 
-int get_max_xor_val(int x) {
-    int p = 0;
+auto qry_max([&](int x) {
     int res = 0;
-    for(int i = 30; i >= 0; i --) {
-        int v = x >> i & 1;
-        if(cnt[son[p][!v]]) {
-            res += 1 << i;
-            p = son[p][!v];
-        }else p = son[p][v];
+    int p = 0;
+    for(int i = 19; i >= 0; i --) {
+        int y = x >> i & 1;
+        if(son[p][!y]) {
+            res += (1 << i);
+            p = son[p][!y];
+        } else if(son[p][y]) {
+            p = son[p][y];
+        } else break;
     }
     return res;
-}
+});
+auto qry_min([&](int x) {
+    int res = 0;
+    int p = 0;
+    for(int i = 19; i >= 0; i --) {
+        int y = x >> i & 1;
+        if(son[p][y]) {
+            p = son[p][y];
+        } else if(son[p][!y]) {
+            res += (1 << i);
+            p = son[p][!y];
+        } else break;
+    }
+    return res;
+});

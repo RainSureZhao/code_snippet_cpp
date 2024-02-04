@@ -35,3 +35,10 @@ struct Min {
 Min operator+(const Min &a, const Min &b) {
 	return min(a.x, b.x);
 }
+struct Gcd {
+	int x;
+	Gcd(int x = 0) : x(x) {}
+};
+Gcd operator+(const Gcd &a, const Gcd &b) {
+	return std::gcd(a.x, b.x);
+}
