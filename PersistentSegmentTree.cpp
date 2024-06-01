@@ -67,4 +67,4 @@ for(int i = 1; i <= n; i ++) {
     root[i] = insert(root[i - 1], 1, n, a[i]);
 }
 // 查询区间[l, r]的第k小值
-int v = query(root[r], root[l - 1], 1, n, k);
+int v = query(root[l - 1], root[r], 1, n, k);
