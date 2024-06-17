@@ -1,6 +1,6 @@
 #pragma once
 
-// RainSure的计算几何模板头文件，由Point.cpp升级而来，只包含基础数据结构定义，算法模板参考计算几何模板仓库
+// RainSure的计算几何模板头文件，由Point.cpp升级而来，只包含基础数据结构定义，算法模板参考计算几何模板仓库 ——赵润朔
 
 template<class T>
 struct Point {
