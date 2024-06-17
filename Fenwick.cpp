@@ -13,7 +13,7 @@ struct Fenwick {
     }
 
     void add(int x, T v) {
-        for (int i = x; i <= n; i += i & -i) {
+        for (int i = x; i < n; i += i & -i) {
             a[i] += v;
         }
     }
