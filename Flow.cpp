@@ -72,3 +72,19 @@ struct Flow {
 // Flow<int> g(2 * n + 2);
 // g.addEdge();
 // g.maxFlow(s, t); s是源点, t是汇点
+// 求二分图最大匹配
+/**
+for(int i = 0; i < n; i ++) {
+    g.add(s, i, 1);
+}
+for(int i = 0; i < m; i ++) {
+    g.add(i + n, t, 1);
+}
+for(auto edge : edges) {
+    g.add(edge[0], edge[1], 1);
+}
+cout << g.maxFLow(s, t) << endl;
+
+
+
+**/
