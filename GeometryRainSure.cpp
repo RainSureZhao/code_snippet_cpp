@@ -2,6 +2,7 @@
 
 const double pi = acos(-1.0);
 const double eps = 1e-8;
+const double inf = 1e18 + 10;
 
 int sgn(double x) {
 	if(fabs(x) < eps) return 0;
@@ -154,3 +155,39 @@ Point point_line_symmetry(const Point& p, const Line& v) {
 	return {2 * q.x - p.x, 2 * q.y - p.y};
 }
 
+// 点到线段的距离
+double dis_point_segment(const Point& p, const Segment& v) {
+	if(sgn(dot(p - v.p1, v.p2 - v.p1)) < 0 or sgn(dot(p - v.p2, v.p1 - v.p2)) < 0) {
+		return min(distance(p, v.p1), distance(p, v.p2));
+	}
+	return dis_point_line(p, v); // 点的投影在线段上
+}
+
+// 两条直线的位置关系
+int line_relation(const Line& v1, const Line& v2) {
+	if(sgn(cross(v1.p2 - v1.p1, v2.p2 - v2.p1)) == 0) {
+		if(point_line_relation(v1.p1, v2) == 0) return 1; // 1: 重合
+		return 0;										  // 0: 平行
+	}
+	return 2;											  // 2: 相交
+}
+
+// 两条直线的交点，利用叉积
+Point line_intersection(const Point& a, const Point& b, const Point& c, const Point& d) { // 线段1: ab, 线段2: cd
+	double s1 = cross(b - a, c - a);
+	double s2 = cross(b - a, d - a);
+	return Point(c.x * s2 - d.x * s1, c.y * s2 - d.y * s1) / (s2 - s1);
+}
+
+// 两条线段是否相交
+bool cross_segment(const Point& a, const Point& b, const Point& c, const Point& d) { // 线段1: ab, 线段2: cd
+	double c1 = cross(b - a, c - a), c2 = cross(b - a, d - a);
+	double d1 = cross(d - c, a - c), d2 = cross(d - c, b - c);
+	return sgn(c1) * sgn(c2) < 0 and sgn(d1) * sgn(d2) < 0;
+}
+
+// 两条线段的交点
+Point segment_intersetion(const Point& a, const Point& b, const Point& c, const Point& d) {
+	if(cross_segment(a, b, c, d)) return line_intersection(a, b, c, d);
+	return Point(-inf, -inf); // 不相交
+}
