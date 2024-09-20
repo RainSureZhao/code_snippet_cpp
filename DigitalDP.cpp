@@ -81,3 +81,35 @@ function<int(int, int, int, int)> dfs([&](int u, int mask, int isLimit, int isNu
     return res;
 });
 return dfs(0, 0, 1, 0) + 1;
+
+
+// 计算[1, n]中，各位数字都不相同的个数
+// https://leetcode.cn/problems/count-special-integers/description/?envType=daily-question&envId=2024-09-20
+class Solution {
+public:
+    int countSpecialNumbers(int n) {
+        auto s = to_string(n);
+        int m = s.size();
+        vector f(m + 1, vector<vector<vector<int>>>(1 << 10, vector<vector<int>>(2, vector<int>(2, -1))));
+        function<int(int, int, int, int)> dfs([&](int u, int mask, int is_limit, int is_num) {
+            if(u == m) {
+                return is_num;
+            }
+            if(f[u][mask][is_limit][is_num] != -1) {
+                return f[u][mask][is_limit][is_num];
+            }
+            auto& res = f[u][mask][is_limit][is_num];
+            res = 0;
+            if(!is_num) {
+                res = dfs(u + 1, mask, 0, 0);
+            }
+            int up = is_limit ? s[u] - '0' : 9;
+            for(int d = is_num ? 0 : 1; d <= up; d ++) {
+                if(mask >> d & 1) continue;
+                res += dfs(u + 1, mask | (1 << d), is_limit && d == up, 1);
+            }
+            return res;
+        });
+        return dfs(0, 0, 1, 0);
+    }
+};
