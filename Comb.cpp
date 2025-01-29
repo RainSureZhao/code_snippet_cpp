@@ -142,4 +142,8 @@ struct Comb {
         if (n < m || m < 0) return 0;
         return fac(n) * invfac(m) * invfac(n - m);
     }
+    Z A(int n, int m) {
+        if(n < m || m < 0) return 0;
+        return fac(n) * invfac(n - m);
+    }
 } comb;
