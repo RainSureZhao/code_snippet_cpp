@@ -12,6 +12,11 @@ struct KMP { // 下标从1开始
         }
     }
     vector<int> match(string t) { // 返回t中所有s的出现位置，下标从1开始
+        if(n == 0) {
+            vector<int> res;
+            for(int i = 0; i < t.size() + 1; i ++) res.push_back(i + 1);
+            return res;
+        }
         vector<int> res;
         t = ' ' + t;
         int m = t.size() - 1;
