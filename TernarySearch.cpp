@@ -7,8 +7,8 @@ auto f([&](int x) {
 // 求凸函数的极大值
 while(l < r) {
 	int lmid = l + (r - l) / 3, rmid = r - (r - l) / 3;
-	if(check(lmid) >= check(rmid)) l = lmid + 1;
-	else r = rmid - 1;
+    if(f(lmid) >= f(rmid)) R = rmid - 1;
+    else L = lmid + 1;
 }
 return max(f(l), f(r));
 
@@ -21,7 +21,7 @@ return max(f(l), f(r));
 
 while(l < r) {
 	int lmid = l + (r - l) / 3, rmid = r - (r - l) / 3;
-	if(check(lmid) <= check(rmid)) r = rmid - 1;
+	if(f(lmid) >= f(rmid)) r = rmid - 1;
 	else l = lmid + 1;
 }
 return min(f(l), f(r));
@@ -33,7 +33,7 @@ return min(f(l), f(r));
 const double eps = 1e-8;
 while(r - l > eps) {
 	double lmid = l + (r - l) / 3, rmid = r - (r - l) / 3;
-	if(check(lmid) >= check(rmid)) l = lmid;
+	if(check(lmid) <= check(rmid)) l = lmid;
 	else r = rmid;
 }
 
